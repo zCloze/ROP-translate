@@ -1,7 +1,7 @@
 # ROP Translation
 translation tool 580vnx <-> 991cnx
 ## Usage
-Use `.\translate.exe [disas]`/
+Use `.\translate.exe [disas]`\
 E.g `.\translate.exe 17b34 16134`
 ```cmd
 [     580 VNX -> 900 JPX     ]
