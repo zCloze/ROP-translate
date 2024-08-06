@@ -1,4 +1,5 @@
 #include <vector>
+#include <map>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -38,6 +39,8 @@ struct Block
 
 vector<Block> _580blocks;
 vector<Block> _991blocks;
+vector<Block> _900blocks;
+map<string, vector<Block>> blocks_map;
 
 void generate(string filename, vector<Block>* blocks) {
   ifstream file(filename);
@@ -146,59 +149,55 @@ int closest(vector<int> vect, int key) {
   return rvalue;
 }
 
-int main() {
+void init() {
   generate("./assets/fx580vnx_disas.txt", &_580blocks);
   generate("./assets/fx991cnx_disas.txt", &_991blocks);
+  generate("./assets/fx900jpx_disas.txt", &_900blocks);
 
-  while (true) {
-    string _;
-    int width = 40;
+  blocks_map = {
+    { "580 VNX", _580blocks },
+    { "991 CNX", _991blocks },
+    { "900 JPX", _900blocks }
+  };
+}
 
-    cout << "[580 or 991 disas [exit]] > ";
-    cin >> _;
+int main(int argc, char* argv[]) {
+  init();
 
-    if (_ == "exit") return 0;
-    int disas = hex2int(_);
+  vector<string> arguments(argv + 1, argv + argc);
+  for (string disas : arguments) {
+    for (const auto& kvx : blocks_map) {
+      string name_x = kvx.first;
+      vector<Block> blocks_x = kvx.second;
 
-    cout << "[580 -> 991]:" << endl;
+      for (const auto& kvy : blocks_map) {
+        string name_y = kvy.first;
+        vector<Block> blocks_y = kvy.second;
 
-    string best = " [best choice]";
-    vector<int> chains = translateByChain(_580blocks, _991blocks, disas);
-    int best_choice = translateByFunction(_580blocks, _991blocks, disas);
-    if (best_choice == -1) {
-      best_choice = closest(chains, disas);
-      best = " [closest choice]";
+        if (name_x == name_y) continue;
+
+        string best_str = " \x1b[92m[best option]\x1b[0m";
+        vector<int> traned_disas = translateByChain(blocks_x, blocks_y, hex2int(disas));
+
+        int best_option = translateByFunction(blocks_x, blocks_y, hex2int(disas));
+        if (best_option == -1) {
+          best_option = closest(traned_disas, hex2int(disas));
+          best_str = " \x1b[92m[closest option]\x1b[0m";
+        }
+
+        if (traned_disas.size() != 0 ) {
+          cout << "\x1b[93m" << "[     " << name_x << " -> " << name_y << "     ]" << "\x1b[0m" << endl;
+          for (int dis : traned_disas) {
+            stringstream stream;
+            stream << "\t" << disas << " -> " << int2hex(dis);
+            if (best_option == dis) stream << best_str;
+
+            cout << stream.str() << endl;
+          }
+        }
+      }
     }
-    
-    for (int raddr : chains) {
-      stringstream stream;
-      stream << "    " << int2hex(disas) << " -> " << int2hex(raddr);
-
-      if (raddr == best_choice) stream << best;
-      cout << stream.str() << endl;
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
-    cout << "[991 -> 580]:" << endl;
-
-    best = " [best choice]";
-    chains = translateByChain(_991blocks, _580blocks, disas);
-    best_choice = translateByFunction(_991blocks, _580blocks, disas);
-    if (best_choice == -1) {
-      best_choice = closest(chains, disas);
-      best = " [closest choice]";
-    }
-    
-    for (int raddr : chains) {
-      stringstream stream;
-      stream << "    " << int2hex(disas) << " -> " << int2hex(raddr);
-
-      if (raddr == best_choice) stream << best;
-      cout << stream.str() << endl;
-    }
-
-    cout << "==================================" << endl << endl;
   }
+  
   return 0;
 }
