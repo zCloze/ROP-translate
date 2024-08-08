@@ -1,5 +1,5 @@
 # ROP Translation
-translation tool 580vnx <-> 991cnx
+translation tool
 ## Usage
 Use `.\translate.exe [disas]`\
 E.g `.\translate.exe 17b34 16134`

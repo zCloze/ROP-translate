@@ -37,9 +37,13 @@ struct Block
   }
 };
 
-vector<Block> _580blocks;
-vector<Block> _991blocks;
-vector<Block> _900blocks;
+vector<Block> _580vnx_blocks;
+vector<Block> _880btg_blocks;
+vector<Block> _991cnx_blocks;
+vector<Block> _991cncw_blocks;
+vector<Block> _jp900n_blocks;
+vector<Block> _570es_blocks;
+vector<Block> _570es_plus_blocks;
 map<string, vector<Block>> blocks_map;
 
 void generate(string filename, vector<Block>* blocks) {
@@ -150,14 +154,22 @@ int closest(vector<int> vect, int key) {
 }
 
 void init() {
-  generate("./assets/fx580vnx_disas.txt", &_580blocks);
-  generate("./assets/fx991cnx_disas.txt", &_991blocks);
-  generate("./assets/fx900jpx_disas.txt", &_900blocks);
+  generate("./assets/fx580vnx_disas.txt", &_580vnx_blocks);
+  generate("./assets/fx880btg_disas.txt", &_880btg_blocks);
+  generate("./assets/fx991cnx_disas.txt", &_991cnx_blocks);
+  generate("./assets/fx991cncw_disas.txt", &_991cncw_blocks);
+  generate("./assets/fxjp900n_disas.txt", &_jp900n_blocks);
+  generate("./assets/fx570es_disas.txt", &_570es_blocks);
+  generate("./assets/fx570esplus_disas.txt", &_570es_plus_blocks);
 
   blocks_map = {
-    { "580 VNX", _580blocks },
-    { "991 CNX", _991blocks },
-    { "900 JPX", _900blocks }
+    { "580 VNX", _580vnx_blocks },
+    { "880 BTG", _880btg_blocks },
+    { "991 CNX", _991cnx_blocks },
+    { "991 CNCW", _991cncw_blocks },
+    { "JP900 N", _jp900n_blocks },
+    { "570 ES", _570es_blocks },
+    { "570 ES PLUS", _570es_plus_blocks}
   };
 }
 
